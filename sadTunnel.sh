@@ -8,10 +8,11 @@ green="\e[1m\e[32m"
 yellow="\e[1m\e[33m"
 blue="\e[1m\e[34m"
 # ------------------- Variables ------------------ #
+VERSION="V1.0.0"
 OS_NAME=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
 echo "Fetching server IP and location..."
-IPV4=$(curl -s -4 ifconfig.me)
-IPV6=$(curl -s -6 ifconfig.me)
+IPV4=$(curl -s https://ipinfo.io/ip)
+IPV6=$(curl -s https://ifconfig.co)
 COUNTRY=$(curl -s https://ipinfo.io/$IPV4 | grep '"country"' | cut -d'"' -f4)
 CITY=$(curl -s https://ipinfo.io/$IPV4 | grep '"city"' | cut -d'"' -f4)
 LOCATION="$COUNTRY - $CITY"
@@ -314,6 +315,8 @@ if [[ "$COUNTRY" == "IR" ]]; then
     echo "      Server IPv6 : $IPV6"
     echo "      Server Location : $LOCATION"
     echo ""
+    echo "      Script Version : $VERSION"
+    echo ""
     echo "   Is IR Server? : ✅"
     echo ""
         echo "      1. Install Requirements"
@@ -351,6 +354,8 @@ else
     echo "      Server IPv4 : $IPV4"
     echo "      Server IPv6 : $IPV6"
     echo "      Server Location : $LOCATION"
+    echo ""
+    echo "      Script Version : $VERSION"
     echo ""
     echo "   Is IR Server? : ❌"
     echo ""
