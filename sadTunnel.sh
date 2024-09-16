@@ -11,10 +11,11 @@ blue="\e[1m\e[34m"
 VERSION="V1.0.0"
 OS_NAME=$(grep '^ID=' /etc/os-release | cut -d'=' -f2 | tr -d '"')
 echo "Fetching server IP and location..."
-IPV4=$(curl -s https://ipinfo.io/ip)
-IPV6=$(curl -s https://ifconfig.co)
-COUNTRY=$(curl -s https://ipinfo.io/$IPV4 | grep '"country"' | cut -d'"' -f4)
-CITY=$(curl -s https://ipinfo.io/$IPV4 | grep '"city"' | cut -d'"' -f4)
+IPV4=$(curl -s https://ipv4.icanhazip.com)
+IPV6=$(curl -s https://ipv6.icanhazip.com)
+LOCATION_INFO=$(curl -s "https://ipwhois.app/json/${IPV4}")
+COUNTRY=$(echo "$LOCATION_INFO" | jq -r '.country')
+CITY=$(echo "$LOCATION_INFO" | jq -r '.city')
 LOCATION="$COUNTRY - $CITY"
 # ------------------ Functions ------------------- #
 function loading {
@@ -172,6 +173,9 @@ function setupNetplanF {
     echo "  IR IPv4 : $IpIR"
     sleep 0.4
     clear
+    echo -e $red
+    echo "      Local-IPv6 Should Be The Same as What You Set on The IRAN Server !"
+    echo "               Or You Should Enter RandomIPv6 In IR Server"
     echo -e $gray
     read -e -p "$(echo -e " Enter Your Local IPv6 ( Enter For Random ) : ${green}")" TunIPv6
     echo -e $red
@@ -225,11 +229,11 @@ function setupNetplanI {
     echo "  FO IPv4 : $IpFO"
     sleep 0.4
     clear
+    echo -e $red
+    echo "      Local-IPv6 Should Be The Same as What You Set on The IRAN Server !"
+    echo "               Or You Should Enter RandomIPv6 In IR Server"
     echo -e $gray
     read -e -p "$(echo -e " Enter Your Local IPv6 ( Enter For Random ) : ${green}")" TunIPv6
-    echo -e $red
-    echo "      It Should Be The Same as What You Set on The IRAN Server !"
-    echo "             Or You Should Enter RandomIPv6 In IR Server"
     echo
     if [ -z "$TunIPv6" ]; then
         TunIPv6=$(generate_random_ipv6)
@@ -306,7 +310,7 @@ then
 fi
 
 clear
-if [[ "$COUNTRY" == "IR" ]]; then
+if [[ "$COUNTRY" == "Iran" ]]; then
     while true; do
     echo -e $white
     figlet -f big "     sadTunnel"
@@ -321,6 +325,7 @@ if [[ "$COUNTRY" == "IR" ]]; then
     echo ""
         echo "      1. Install Requirements"
         echo "      2. Setup Local IPv6"
+        echo "      3. Setup Tunnel"
         echo "      0. Exit"
         echo ""
         read -e -p "Choose an Option : " option
